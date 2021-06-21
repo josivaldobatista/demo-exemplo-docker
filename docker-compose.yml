@@ -1,0 +1,30 @@
+version: '3'
+services:
+
+  postgres:
+    image: 'postgres:alpine'
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: demo_db
+      POSTGRES_HOST: postgres
+  
+  demo:
+    container_name: demo
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: valdo/demo
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/demo_db
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres-volume:
